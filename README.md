@@ -23,6 +23,8 @@ npm run client
 ### 4️⃣ Test the application  
 visit http://localhost:5173/
 
+---
+
 ## 🛠 Installation & Setup  
 
 ### 1️⃣ Clone the Repository  
@@ -69,42 +71,3 @@ backend deployed on render
 npm run dev
 ```
 ---
-
-## Submission Instructions
-
-1. **Clone the Repository Locally**:
-   - Clone the repository to your local machine:
-     ```bash
-     git clone https://github.com/YOUR_USERNAME/react-node-task-manager.git
-     ```
-2. **Complete the Task**:
-
-  ## Test Problems (60 ~ 90mins)
-  ## ⚡ Task 1 - Add Task List on the Nav bar
-  - Display a list of tasks, showing task title, description, and status (e.g., "Incomplete" or "Complete").
-  - Option to mark a task as complete or edit the task.
-
-  ## ⚡ Task 2 - Display Login/Register page on before the landing page
-  - Users are should to login first to access the full list of tabs.
-    When they're logged out, only Dashboard panel should to be displayed.
-  - Option to mark a task as complete or edit the task.
-
-  ## ⚡ Task 3 - Task Filter
-  - Allow users to filter tasks based on their completion status (e.g., show only completed or incomplete tasks).
-  - Optional: Add a search feature to filter tasks by title.
-
-  ## ⚡ Task 4 - Add User Log page on the Admin page
-  - Display the user logs(login time, logout time, JWT token name, user name, role, ip address)
-  - The user logs could be deleted by admin action - DELETE
-
-3. **Commit Your Changes**:
-   - Make sure you commit your changes regularly:
-     ```bash
-     git add .
-     git commit -m "Task1 completed!"
-     git push origin main
-     ```
-
-4. **Submit Your Repository Link**:
-   - Once you’ve completed the tasks, send the result to https://forms.gle/1E2z5713vGV9vhr4A.
-   - Please make sure that your repository is **public** or share access if it's private.

@@ -7,7 +7,7 @@ const TaskSchema = new mongoose.Schema({
     trim: true,
     validate: {
       validator: function(v) {
-        return v && v.trim() > 0;
+        return v && v.trim().length > 0;
       },
       message: "Title must not be empty"
     }
@@ -20,5 +20,17 @@ const TaskSchema = new mongoose.Schema({
     default: 0
   }
 })
+
+
+const transform = (doc, ret) => {
+  ret.id = ret._id;
+  delete ret._id;
+  delete ret.__v;
+  return ret;
+}
+
+TaskSchema.set('toJSON', { transform });
+
+TaskSchema.set('toObject', { transform });
 
 module.exports = mongoose.model('Task', TaskSchema)

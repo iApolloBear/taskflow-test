@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite'
 import plugin_checker from "vite-plugin-checker"
-import plugin_style_svg from "vite-plugin-style-svg"
 import plugin_dts from "vite-plugin-dts"
 import plugin_inspect from "vite-plugin-inspect"
 
@@ -11,7 +10,6 @@ export default defineConfig({
   plugins: [
     react(), 
     plugin_checker(), 
-    plugin_style_svg(),
     plugin_dts(),
     plugin_inspect()
   ],

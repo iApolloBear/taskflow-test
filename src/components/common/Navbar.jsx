@@ -1,13 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-import { FaUserCircle } from "react-icons/fa";
+import { FaTasks, FaUserCircle } from "react-icons/fa";
 
 const Navbar = () => {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const hideProfileRoutes = ["/", "/login", "/signup"];
+  const publicRoutes = ["/login", "/signup"];
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -78,6 +79,12 @@ const Navbar = () => {
       </Link>
 
       <div className="flex items-center gap-4">
+        {!publicRoutes.filter(route => route != "/").includes(location.pathname) &&
+          <Link to="/" className="flex items-center font-medium py-2 rounded-lg gap-2">
+            <FaTasks />
+            <span>Task List</span>
+          </Link>
+        }
         {/* Profile Button (Hidden on Landing/Login/Signup) */}
         {!hideProfileRoutes.includes(location.pathname) && (
           <div className="relative" ref={dropdownRef}>

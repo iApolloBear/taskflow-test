@@ -9,8 +9,10 @@ import UserSidebar from "./UserSidebar";
 import Column from "./Column";
 import SortableItem from "./SortableItem";
 import notificationSound from "./notification.mp3";
+import { useAuth } from "../../contexts/AuthContext";
 
 const UserDashboard = () => {
+  const { user } = useAuth()
   const [tasks, setTasks] = useState({
     "To Do": [],
     "In Progress": [],
@@ -103,6 +105,8 @@ const UserDashboard = () => {
       },
     ],
   };
+
+  if (!user) return <UserSidebar />
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-blue-100 to-gray-100">

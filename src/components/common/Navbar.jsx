@@ -4,7 +4,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { FaUserCircle } from "react-icons/fa";
 
 const Navbar = () => {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const hideProfileRoutes = ["/", "/login", "/signup"];
@@ -19,7 +19,7 @@ const Navbar = () => {
 
     // Load correct profile from localStorage
     const storedProfile = JSON.parse(localStorage.getItem(isAdminPortal ? "adminProfile" : "userProfile"));
-    
+
     if (storedProfile) {
       setProfile({
         name: storedProfile.name || "User",
@@ -37,7 +37,7 @@ const Navbar = () => {
       // Remove the correct profile from storage
       localStorage.removeItem(isAdminPortal ? "adminProfile" : "userProfile");
 
-      navigate("/");
+      navigate(`/${isAdminPortal ? "admin" : "user"}/dashboard`);
     } catch (err) {
       console.error("Logout failed:", err);
     }
@@ -102,23 +102,35 @@ const Navbar = () => {
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-44 bg-white shadow-lg rounded-lg overflow-hidden">
                 <ul className="text-gray-700">
-                  <li>
-                    <Link
-                      to={profile.role === "admin" ? "/admin/profile" : "/user/profile"}
-                      className="block px-4 py-2 hover:bg-gray-200 transition"
-                      onClick={() => setDropdownOpen(false)}
-                    >
-                      Profile
-                    </Link>
-                  </li>
-                  <li>
-                    <button
-                      className="block w-full text-left px-4 py-2 hover:bg-red-100 text-red-600 transition"
-                      onClick={handleLogout}
-                    >
-                      Logout
-                    </button>
-                  </li>
+                  {user ?
+                    <>
+                      <li>
+                        <Link
+                          to={profile.role === "admin" ? "/admin/profile" : "/user/profile"}
+                          className="block px-4 py-2 hover:bg-gray-200 transition"
+                          onClick={() => setDropdownOpen(false)}
+                        >
+                          Profile
+                        </Link>
+                      </li>
+                      <li>
+                        <button
+                          className="block w-full text-left px-4 py-2 hover:bg-red-100 text-red-600 transition"
+                          onClick={handleLogout}
+                        >
+                          Logout
+                        </button>
+                      </li>
+                    </>
+                    : <li>
+                      <Link
+                        to={"/signup"}
+                        className="block px-4 py-2 hover:bg-gray-200 transition"
+                      >
+                        Signup
+                      </Link>
+                    </li>
+                  }
                 </ul>
               </div>
             )}

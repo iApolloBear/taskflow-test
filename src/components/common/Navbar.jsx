@@ -80,7 +80,7 @@ const Navbar = () => {
 
       <div className="flex items-center gap-4">
         {!publicRoutes.filter(route => route != "/").includes(location.pathname) &&
-          <Link to="/" className="flex items-center font-medium py-2 rounded-lg gap-2">
+          <Link to="/task-list" className="flex items-center font-medium py-2 rounded-lg gap-2">
             <FaTasks />
             <span>Task List</span>
           </Link>

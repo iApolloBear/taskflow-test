@@ -24,6 +24,7 @@ import PublicRoute from "./components/routes/PublicRoute";
 import PrivateRoute from "./components/routes/PrivateRoute";
 import Tasks from "./pages/Tasks";
 import UserTasks from "./pages/UserPages/UserTasks";
+import UserLogs from "./pages/AdminPages/UserLogs";
 function App() {
   return (
     <AuthProvider>
@@ -50,6 +51,7 @@ function App() {
             <Route path="/user/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
             <Route path="/admin/users" element={<PrivateRoute><Users /></PrivateRoute>} />
             <Route path="/admin/manage-users" element={<PrivateRoute><ManageUsers /></PrivateRoute>} />
+            <Route path="/admin/user-logs" element={<PrivateRoute><UserLogs /></PrivateRoute>} />
             <Route path="/admin/manage-tasks" element={<PrivateRoute><ManageTasks /></PrivateRoute>} />
             <Route path="/admin/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
 

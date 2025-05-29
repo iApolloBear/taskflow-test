@@ -9,6 +9,7 @@ const Sidebar = () => {
   const menuItems = [
     { path: "/admin/dashboard", label: "Dashboard", icon: <FaChartPie /> },
     { path: "/admin/manage-users", label: "Manage Users", icon: <FaUsers /> },
+    { path: "/admin/user-logs", label: "Users Logs", icon: <FaUsers /> },
     { path: "/admin/manage-tasks", label: "Manage Tasks", icon: <FaTasks /> },
     { path: "/admin/settings", label: "Settings", icon: <FaCog /> },
   ];
@@ -22,11 +23,10 @@ const Sidebar = () => {
           <li key={path}>
             <Link
               to={path}
-              className={`flex items-center gap-3 py-3 px-5 rounded-lg transition-all duration-200 text-lg font-medium ${
-                location.pathname === path
+              className={`flex items-center gap-3 py-3 px-5 rounded-lg transition-all duration-200 text-lg font-medium ${location.pathname === path
                   ? "bg-blue-600 shadow-lg transform scale-105"
                   : "hover:bg-blue-700 hover:scale-105 transition"
-              }`}
+                }`}
             >
               <span className="text-xl">{icon}</span>
               {label}

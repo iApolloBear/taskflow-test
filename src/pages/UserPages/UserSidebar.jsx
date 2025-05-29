@@ -10,6 +10,7 @@ const UserSidebar = () => {
   // Sidebar links with icons
   const menuItems = !user ? [] : [
     { path: "/user/dashboard", label: "Dashboard", icon: <FaChartBar /> },
+    { path: "/user/tasks", label: "Task List", icon: <FaTasks /> },
     { path: "/user/userpage", label: "Create Tasks", icon: <FaTasks /> },
     { path: "/user/calendar", label: "Calendar", icon: <FaCalendarAlt /> },
     { path: "/user/notifications", label: "Notifications", icon: <FaBell /> },

@@ -23,6 +23,7 @@ import ResetPassword from "./components/auth/ResetPassword";
 import PublicRoute from "./components/routes/PublicRoute";
 import PrivateRoute from "./components/routes/PrivateRoute";
 import Tasks from "./pages/Tasks";
+import UserTasks from "./pages/UserPages/UserTasks";
 function App() {
   return (
     <AuthProvider>
@@ -43,6 +44,7 @@ function App() {
             <Route path="/" element={<PrivateRoute><Landing /></PrivateRoute>} />
             <Route path="/task-list" element={<PrivateRoute><Tasks /></PrivateRoute>} />
             <Route path="/user/userpage" element={<PrivateRoute><UserPage /></PrivateRoute>} />
+            <Route path="/user/tasks" element={<PrivateRoute><UserTasks /></PrivateRoute>} />
             <Route path="/user/notifications" element={<PrivateRoute><NotificationsPage /></PrivateRoute>} />
             <Route path="/user/calendar" element={<PrivateRoute><CalendarPage /></PrivateRoute>} />
             <Route path="/user/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />

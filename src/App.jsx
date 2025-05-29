@@ -20,6 +20,8 @@ import ManageUsers from "./pages/AdminPages/ManageUsers";
 import ManageTasks from "./pages/AdminPages/ManageTasks";
 import Settings from "./pages/AdminPages/Settings";
 import ResetPassword from "./components/auth/ResetPassword";
+import PublicRoute from "./components/routes/PublicRoute";
+import PrivateRoute from "./components/routes/PrivateRoute";
 function App() {
   return (
     <AuthProvider>
@@ -27,21 +29,27 @@ function App() {
         <Router>
           <Navbar />
           <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route path="/user/dashboard" element={<UserDashboard />} />
-            <Route path="/user/userpage" element={<UserPage />} /> 
-             <Route path="/user/notifications" element={<NotificationsPage />} />
-            <Route path="/user/calendar" element={<CalendarPage />} />
-            <Route path="/user/profile" element={<ProfilePage />} />
-            <Route path="/admin/users" element={<Users />} />
-            <Route path="/admin/manage-users" element={<ManageUsers />} />
-<Route path="/admin/manage-tasks" element={<ManageTasks />} />
-<Route path="/admin/settings" element={<Settings />} />
+
+            {/* Pubilc Routes */}
+            <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
+            <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+            <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+            <Route path="/reset-password" element={<PublicRoute><ResetPassword /></PublicRoute>} />
+
+            {/* Private Routes */}
+            <Route path="/" element={<PrivateRoute><Landing /></PrivateRoute>} />
+            <Route path="/user/userpage" element={<PrivateRoute><UserPage /></PrivateRoute>} />
+            <Route path="/user/notifications" element={<PrivateRoute><NotificationsPage /></PrivateRoute>} />
+            <Route path="/user/calendar" element={<PrivateRoute><CalendarPage /></PrivateRoute>} />
+            <Route path="/user/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+            <Route path="/admin/users" element={<PrivateRoute><Users /></PrivateRoute>} />
+            <Route path="/admin/manage-users" element={<PrivateRoute><ManageUsers /></PrivateRoute>} />
+            <Route path="/admin/manage-tasks" element={<PrivateRoute><ManageTasks /></PrivateRoute>} />
+            <Route path="/admin/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
+
+
           </Routes>
           <Footer />
         </Router>

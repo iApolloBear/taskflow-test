@@ -7,7 +7,7 @@ export function useAuth() {
 }
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) ?? null);
 
   const signup = (email, password) => {
     return new Promise((resolve) => {

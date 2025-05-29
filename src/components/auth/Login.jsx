@@ -38,6 +38,7 @@ const Login = () => {
         return;
       }
 
+      login(email)
       localStorage.setItem("token", data.token);
       navigate(data.role === "admin" ? "/admin/dashboard" : "/user/dashboard");
     } catch (err) {
@@ -87,11 +88,10 @@ const Login = () => {
 
           <button
             type="submit"
-            className={`w-full py-2 rounded-md shadow-md transition duration-200 text-white ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-gradient-to-r from-blue-500 to-purple-600 hover:opacity-90"
-            }`}
+            className={`w-full py-2 rounded-md shadow-md transition duration-200 text-white ${loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-gradient-to-r from-blue-500 to-purple-600 hover:opacity-90"
+              }`}
             disabled={loading}
           >
             {loading ? "Logging in..." : "Login"}

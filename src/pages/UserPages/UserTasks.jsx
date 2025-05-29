@@ -6,7 +6,7 @@ const UserTasks = () => {
     <div className="flex min-h-screen bg-gray-100">
       <UserSidebar />
 
-      <div className="flex-1 p-6">
+      <div className="flex-1">
         <Tasks />
       </div>
     </div>

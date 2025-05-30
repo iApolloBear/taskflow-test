@@ -1,11 +1,16 @@
 import React from "react";
 import Sidebar from "../../components/admin/Sidebar";
-import AdminStats from "../../components/admin/AdminStats"; 
+import AdminStats from "../../components/admin/AdminStats";
 import RecentUsers from "../../components/admin/RecentUsers";
 import PendingTasks from "../../components/admin/PendingTasks";
-import TaskChart from "../../components/admin/TaskAnalytics"; 
+import TaskChart from "../../components/admin/TaskAnalytics";
+import { useAuth } from "../../contexts/AuthContext";
 
 const Dashboard = () => {
+  const { user } = useAuth();
+
+  if (!user) return <Sidebar />;
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
@@ -13,7 +18,9 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="flex-1 p-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Admin Dashboard</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">
+          Admin Dashboard
+        </h1>
 
         {/* Admin Statistics */}
         <AdminStats />
@@ -24,8 +31,6 @@ const Dashboard = () => {
           <PendingTasks />
           <TaskChart />
         </div>
-
-        
       </div>
     </div>
   );

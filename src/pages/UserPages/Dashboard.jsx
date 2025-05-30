@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { DndContext, closestCorners } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { Bar } from "react-chartjs-2";
 import "chart.js/auto";
 import { toast, ToastContainer } from "react-toastify";
@@ -10,14 +13,11 @@ import Column from "./Column";
 import SortableItem from "./SortableItem";
 import notificationSound from "./notification.mp3";
 import { useAuth } from "../../contexts/AuthContext";
+import { useTasks } from "../../hooks/useTasks";
 
 const UserDashboard = () => {
-  const { user } = useAuth()
-  const [tasks, setTasks] = useState({
-    "To Do": [],
-    "In Progress": [],
-    Completed: [],
-  });
+  const { user } = useAuth();
+  const { tasks, categorizedTasks, setCategorizedTasks } = useTasks();
 
   const [notes, setNotes] = useState(localStorage.getItem("notes") || "");
   const audioRef = useRef(new Audio(notificationSound));
@@ -28,15 +28,8 @@ const UserDashboard = () => {
   }, []);
 
   useEffect(() => {
-    const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    const categorizedTasks = {
-      "To Do": storedTasks.filter((task) => task.progress <= 40),
-      "In Progress": storedTasks.filter((task) => task.progress > 40 && task.progress <= 80),
-      Completed: storedTasks.filter((task) => task.progress > 80),
-    };
-    setTasks(categorizedTasks);
-    checkDeadlines(storedTasks);
-  }, []);
+    checkDeadlines(tasks);
+  }, [tasks]);
 
   useEffect(() => {
     localStorage.setItem("notes", notes);
@@ -50,19 +43,27 @@ const UserDashboard = () => {
 
     tasks.forEach((task) => {
       if (task.deadline === today) {
-        showNotification(`🚨 Task Due Today: "${task.title}"`, "bg-red-500 text-white");
+        showNotification(
+          `🚨 Task Due Today: "${task.title}"`,
+          "bg-red-500 text-white",
+        );
       } else if (task.deadline === tomorrowStr) {
-        showNotification(`⏳ Task Due Tomorrow: "${task.title}"`, "bg-yellow-500 text-black");
+        showNotification(
+          `⏳ Task Due Tomorrow: "${task.title}"`,
+          "bg-yellow-500 text-black",
+        );
       }
     });
   };
 
   const showNotification = (message, bgClass) => {
     toast(
-      <div className={`p-2 rounded-lg shadow-md font-semibold text-lg ${bgClass}`}>
+      <div
+        className={`p-2 rounded-lg shadow-md font-semibold text-lg ${bgClass}`}
+      >
         {message}
       </div>,
-      { position: "top-right", autoClose: 5000, hideProgressBar: false }
+      { position: "top-right", autoClose: 5000, hideProgressBar: false },
     );
     audioRef.current.play();
   };
@@ -71,23 +72,40 @@ const UserDashboard = () => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const sourceColumn = Object.keys(tasks).find((column) =>
-      tasks[column].some((task) => task.id === active.id)
+    const sourceColumn = Object.keys(categorizedTasks).find((column) =>
+      categorizedTasks[column].some((task) => task.id === active.id),
     );
-    const targetColumn = Object.keys(tasks).find((column) => tasks[column].some((task) => task.id === over.id)) || over.id;
+    const targetColumn =
+      Object.keys(categorizedTasks).find((column) =>
+        categorizedTasks[column].some((task) => task.id === over.id),
+      ) || over.id;
 
     if (!sourceColumn || !targetColumn || sourceColumn === targetColumn) return;
 
-    setTasks((prevTasks) => {
+    setCategorizedTasks((prevTasks) => {
       const updatedTasks = { ...prevTasks };
-      const movedTask = updatedTasks[sourceColumn].find((task) => task.id === active.id);
-      updatedTasks[sourceColumn] = updatedTasks[sourceColumn].filter((task) => task.id !== active.id);
-      updatedTasks[targetColumn] = [...(updatedTasks[targetColumn] || []), movedTask];
+      const movedTask = updatedTasks[sourceColumn].find(
+        (task) => task.id === active.id,
+      );
+      updatedTasks[sourceColumn] = updatedTasks[sourceColumn].filter(
+        (task) => task.id !== active.id,
+      );
+      updatedTasks[targetColumn] = [
+        ...(updatedTasks[targetColumn] || []),
+        movedTask,
+      ];
 
       return updatedTasks;
     });
 
-    localStorage.setItem("tasks", JSON.stringify([...tasks["To Do"], ...tasks["In Progress"], ...tasks["Completed"]]));
+    localStorage.setItem(
+      "tasks",
+      JSON.stringify([
+        ...categorizedTasks["To Do"],
+        ...categorizedTasks["In Progress"],
+        ...categorizedTasks["Completed"],
+      ]),
+    );
   };
 
   // Task Analytics Chart Data (Bar Graph)
@@ -97,16 +115,16 @@ const UserDashboard = () => {
       {
         label: "Number of Tasks",
         data: [
-          tasks["To Do"].length,
-          tasks["In Progress"].length,
-          tasks.Completed.length,
+          categorizedTasks["To Do"].length,
+          categorizedTasks["In Progress"].length,
+          categorizedTasks.Completed.length,
         ],
         backgroundColor: ["#FF6384", "#FFCE56", "#36A2EB"],
       },
     ],
   };
 
-  if (!user) return <UserSidebar />
+  if (!user) return <UserSidebar />;
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-blue-100 to-gray-100">
@@ -120,12 +138,23 @@ const UserDashboard = () => {
 
         {/* Kanban Board */}
         <div className="glassmorphism p-4 rounded-xl shadow-lg bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-lg border border-white/20">
-          <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+          <DndContext
+            collisionDetection={closestCorners}
+            onDragEnd={handleDragEnd}
+          >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Object.keys(tasks).map((columnKey) => (
-                <Column key={columnKey} title={columnKey} id={columnKey} className="w-[280px]">
-                  <SortableContext items={tasks[columnKey].map((task) => task.id)} strategy={verticalListSortingStrategy}>
-                    {tasks[columnKey].map((task) => (
+              {Object.keys(categorizedTasks).map((columnKey) => (
+                <Column
+                  key={columnKey}
+                  title={columnKey}
+                  id={columnKey}
+                  className="w-[280px]"
+                >
+                  <SortableContext
+                    items={categorizedTasks[columnKey].map((task) => task.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {categorizedTasks[columnKey].map((task) => (
                       <SortableItem key={task.id} id={task.id} task={task} />
                     ))}
                   </SortableContext>
@@ -147,7 +176,9 @@ const UserDashboard = () => {
 
           {/* Notes */}
           <div className="p-6 w-full lg:w-[590px] bg-green-900 text-white rounded-xl border-[12px] border-[#8B4501] shadow-lg flex flex-col">
-            <h2 className="text-2xl font-bold text-yellow-400 mb-2 text-center">📌 Notes</h2>
+            <h2 className="text-2xl font-bold text-yellow-400 mb-2 text-center">
+              📌 Notes
+            </h2>
 
             {/* Notes Input Field - Enlarged to match Task Analytics */}
             <textarea

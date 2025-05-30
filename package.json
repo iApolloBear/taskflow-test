@@ -9,7 +9,9 @@
     "client": "vite --host",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "client:localDev": "vite --mode localDev",
+    "client:development": "vite --mode development"
   },
   "dependencies": {
     "@dnd-kit/accessibility": "^3.1.1",

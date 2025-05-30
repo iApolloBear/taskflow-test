@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import { signUp } from "../../utils/authApi";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -32,7 +32,7 @@ const Signup = () => {
 
     setLoading(true);
     try {
-      const res = await axios.post("https://zidio-task-management-backend.onrender.com/api/auth/register", {
+      const res = await signUp({
         fullName: formData.fullName,
         email: formData.email,
         password: formData.password,
@@ -41,12 +41,15 @@ const Signup = () => {
 
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);
-        navigate(role === "admin" ? "/admin/dashboard" : "/user/dashboard");
+        navigate("/login");
       } else {
         setError("Failed to receive token. Try again.");
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to create an account. Try again.");
+      setError(
+        err.response?.data?.message ||
+          "Failed to create an account. Try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -97,7 +100,9 @@ const Signup = () => {
             />
           </div>
           <div>
-            <label className="block text-gray-600 text-sm">Confirm Password</label>
+            <label className="block text-gray-600 text-sm">
+              Confirm Password
+            </label>
             <input
               type="password"
               name="confirmPassword"
@@ -118,7 +123,7 @@ const Signup = () => {
         </form>
         <div className="text-center mt-3">
           <p className="text-sm text-gray-600">
-            Already have an account? {" "}
+            Already have an account?{" "}
             <span
               className="text-blue-500 hover:underline cursor-pointer"
               onClick={() => navigate("/login", { state: { role } })}
@@ -133,3 +138,4 @@ const Signup = () => {
 };
 
 export default Signup;
+

@@ -1,30 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { generateLog, generateUsername } from "../../utils/userLogs";
+import React from "react";
 import Sidebar from "../../components/admin/Sidebar";
 import { format } from "date-fns";
+import { useUsersLogs } from "../../hooks/useUsersLogs";
 
 const UserLogs = () => {
-  const [userLogs, setUserLogs] = useState([]);
-
-  useEffect(() => {
-    fetch("https://zidio-task-management-backend.onrender.com/admin/users")
-      .then((res) => res.json())
-      .then((data) => {
-        const sortedUsers = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((user) => {
-          return {
-            ...user,
-            ...generateLog(),
-            username: generateUsername(user.fullName)
-          }
-        })
-        setUserLogs(sortedUsers);
-      })
-      .catch((err) => console.error("Error fetching users:", err));
-  }, []);
-
-  const deleteUserLog = async (id) => {
-    setUserLogs(userLogs.filter((log) => log._id !== id));
-  };
+  const { usersLogs, deleteUserLog } = useUsersLogs();
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -47,23 +27,29 @@ const UserLogs = () => {
               </tr>
             </thead>
             <tbody>
-              {userLogs.map((user) => (
-                <tr key={user._id} className="border-b">
-                  <td className="p-2">{format(user.loginTime, "d/M/yyyy, h:mm:ss a")}</td>
-                  <td className="p-2">{format(user.logoutTime, "d/M/yyyy, h:mm:ss a")}</td>
+              {usersLogs.map((userLog) => (
+                <tr key={userLog.id} className="border-b">
+                  <td className="p-2">
+                    {format(userLog.loginTime, "d/M/yyyy, h:mm:ss a")}
+                  </td>
+                  <td className="p-2">
+                    {userLog.logoutTime
+                      ? format(userLog.logoutTime, "d/M/yyyy, h:mm:ss a")
+                      : ""}
+                  </td>
                   <td className="p-2">
                     <span className="inline-block break-words whitespace-pre-wrap max-w-xs font-mono">
-                      {user.jwtToken}
+                      {userLog.jwtToken}
                     </span>
                   </td>
-                  <td className="p-2">{user.fullName}</td>
-                  <td className="p-2">{user.username}</td>
-                  <td className="p-2">{user.role}</td>
-                  <td className="p-2">{user.ipAddress}</td>
+                  <td className="p-2">{userLog.user.fullName}</td>
+                  <td className="p-2">{userLog.username}</td>
+                  <td className="p-2">{userLog.user.role}</td>
+                  <td className="p-2">{userLog.ipAddress}</td>
                   <td>
                     <button
                       className="bg-red-500 text-white px-3 py-1 rounded ml-2 hover:bg-red-600"
-                      onClick={() => deleteUserLog(user._id)}
+                      onClick={() => deleteUserLog(userLog.id)}
                     >
                       Delete
                     </button>
@@ -71,12 +57,11 @@ const UserLogs = () => {
                 </tr>
               ))}
             </tbody>
-
           </table>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default UserLogs
+export default UserLogs;

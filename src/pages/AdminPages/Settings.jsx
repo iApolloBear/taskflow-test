@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Sidebar from "../../components/admin/Sidebar";
 
 const Settings = () => {
@@ -66,7 +66,9 @@ const Settings = () => {
 
       {/* Main Content */}
       <div className="flex-1 p-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Admin Settings</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">
+          Admin Settings
+        </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Profile Settings */}
@@ -89,7 +91,13 @@ const Settings = () => {
                   <span className="text-gray-600">Upload</span>
                 )}
               </label>
-              <input type="file" id="profilePic" accept="image/*" onChange={handleImageChange} className="hidden" />
+              <input
+                type="file"
+                id="profilePic"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
             </div>
 
             {/* Profile Details */}

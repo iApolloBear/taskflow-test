@@ -1,30 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Sidebar from "../../components/admin/Sidebar";
+import { useTasks } from "../../hooks/useTasks";
 
 const ManageTasks = () => {
-  const [tasks, setTasks] = useState([]);
-
-  // Load tasks from localStorage (same as User Dashboard)
-  useEffect(() => {
-    const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    setTasks(storedTasks);
-  }, []);
-
-  // ✅ Mark task as completed
-  const completeTask = (id) => {
-    const updatedTasks = tasks.map((task) =>
-      task.id === id ? { ...task, status: "Completed", progress: 100 } : task
-    );
-    setTasks(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
-  };
-
-  // ❌ Delete a task
-  const deleteTask = (id) => {
-    const updatedTasks = tasks.filter((task) => task.id !== id);
-    setTasks(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
-  };
+  const { tasks, completeTask, deleteTask } = useTasks();
 
   return (
     <div className="flex min-h-screen bg-gray-100">

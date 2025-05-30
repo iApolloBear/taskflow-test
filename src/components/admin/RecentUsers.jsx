@@ -1,22 +1,13 @@
 import React from "react";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useUsers } from "../../hooks/useUsers";
 const RecentUsers = () => {
+  const { users } = useUsers();
 
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    fetch("https://zidio-task-management-backend.onrender.com/admin/users") // API URL
-      .then((res) => res.json())
-      .then((data) => {
-        const sortedUsers = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        setUsers(sortedUsers);
-      })
-      .catch((err) => console.error(err));
-  }, []);
   const formatDate = (utcDate) => {
-    return new Date(utcDate).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
-};
+    return new Date(utcDate).toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",
+    });
+  };
   return (
     <div className="bg-white p-4 shadow rounded-lg col-span-2">
       <h3 className="text-xl font-semibold mb-4">Recent Users</h3>
@@ -38,7 +29,9 @@ const RecentUsers = () => {
               <tr key={index} className="hover:bg-gray-50">
                 <td className="p-2 border border-gray-200">{user.fullName}</td>
                 <td className="p-2 border border-gray-200">{user.email}</td>
-                <td className="p-2 border border-gray-200">{formatDate(user.createdAt)}</td>
+                <td className="p-2 border border-gray-200">
+                  {formatDate(user.createdAt)}
+                </td>
               </tr>
             ))}
           </tbody>

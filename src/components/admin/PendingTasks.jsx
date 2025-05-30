@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useTasks } from "../../hooks/useTasks";
 
 const statusStyles = {
   Pending: "bg-red-200 text-red-800 px-2 py-1 rounded",
@@ -6,18 +7,7 @@ const statusStyles = {
 };
 
 const PendingTasks = () => {
-  const [tasks, setTasks] = useState([]);
-
-  useEffect(() => {
-    // Fetch tasks from localStorage
-    const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    console.log("Stored Tasks:", storedTasks); // ✅ Debugging step
-
-    // Filter tasks that are pending
-    const filteredTasks = storedTasks.filter((task) => task.progress < 100);
-
-    setTasks(filteredTasks);
-  }, []);
+  const { pendingTasks: tasks } = useTasks();
 
   return (
     <div className="bg-white p-4 shadow rounded-lg">
@@ -25,9 +15,17 @@ const PendingTasks = () => {
       <ul>
         {tasks.length > 0 ? (
           tasks.map((task, index) => (
-            <li key={index} className="flex justify-between items-center border-b py-2">
+            <li
+              key={index}
+              className="flex justify-between items-center border-b py-2"
+            >
               <span>{task.title}</span> {/* ✅ Removed Assigned Name */}
-              <span className={statusStyles[task.status] || "bg-gray-200 text-gray-800 px-2 py-1 rounded"}>
+              <span
+                className={
+                  statusStyles[task.status] ||
+                  "bg-gray-200 text-gray-800 px-2 py-1 rounded"
+                }
+              >
                 {task.status || "Pending"}
               </span>
             </li>

@@ -149,6 +149,11 @@ export const useTasks = () => {
     [tasks, titleFilter, statusFilter],
   );
 
+  const pendingTasks = useMemo(
+    () => tasks.filter((task) => task.progress < 100),
+    [tasks],
+  );
+
   return {
     tasks,
     filteredTasks,
@@ -172,5 +177,6 @@ export const useTasks = () => {
     setTasks,
     events,
     setEvents,
+    pendingTasks,
   };
 };

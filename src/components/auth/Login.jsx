@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,7 +24,7 @@ const Login = () => {
     const timeout = setTimeout(() => controller.abort(), 10000); // Abort request after 10 seconds
 
     try {
-      const response = await fetch("https://zidio-task-management-backend.onrender.com/api/auth/login", {
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, role }),
@@ -38,7 +40,7 @@ const Login = () => {
         return;
       }
 
-      login(email)
+      login(email);
       localStorage.setItem("token", data.token);
       navigate(data.role === "admin" ? "/admin/dashboard" : "/user/dashboard");
     } catch (err) {
@@ -59,11 +61,15 @@ const Login = () => {
           {role === "admin" ? "Admin Login" : "User Login"}
         </h2>
 
-        {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
+        {error && (
+          <p className="text-red-500 text-sm text-center mb-4">{error}</p>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-gray-700 text-sm font-medium">Email</label>
+            <label className="block text-gray-700 text-sm font-medium">
+              Email
+            </label>
             <input
               type="email"
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm"
@@ -75,7 +81,9 @@ const Login = () => {
           </div>
 
           <div>
-            <label className="block text-gray-700 text-sm font-medium">Password</label>
+            <label className="block text-gray-700 text-sm font-medium">
+              Password
+            </label>
             <input
               type="password"
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm"
@@ -88,10 +96,11 @@ const Login = () => {
 
           <button
             type="submit"
-            className={`w-full py-2 rounded-md shadow-md transition duration-200 text-white ${loading
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-gradient-to-r from-blue-500 to-purple-600 hover:opacity-90"
-              }`}
+            className={`w-full py-2 rounded-md shadow-md transition duration-200 text-white ${
+              loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-gradient-to-r from-blue-500 to-purple-600 hover:opacity-90"
+            }`}
             disabled={loading}
           >
             {loading ? "Logging in..." : "Login"}

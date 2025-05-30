@@ -11,6 +11,11 @@ export const useTasks = () => {
   });
   const [titleFilter, setTitleFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [categorizedTasks, setCategorizedTasks] = useState({
+    "To Do": [],
+    "In Progress": [],
+    Completed: [],
+  });
 
   // Fetch tasks from backend
   const loadTasks = useCallback(async () => {
@@ -25,6 +30,17 @@ export const useTasks = () => {
   useEffect(() => {
     loadTasks();
   }, [loadTasks]);
+
+  useEffect(() => {
+    const categorizedTasks = {
+      "To Do": tasks.filter((task) => task.progress <= 40),
+      "In Progress": tasks.filter(
+        (task) => task.progress > 40 && task.progress <= 80,
+      ),
+      Completed: tasks.filter((task) => task.progress > 80),
+    };
+    setCategorizedTasks(categorizedTasks);
+  }, [tasks]);
 
   const completeTask = async (id) => {
     try {
@@ -98,5 +114,7 @@ export const useTasks = () => {
     completeTask,
     setTitleFilter,
     setStatusFilter,
+    categorizedTasks,
+    setCategorizedTasks,
   };
 };

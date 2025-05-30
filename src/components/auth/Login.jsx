@@ -24,7 +24,7 @@ const Login = () => {
     const timeout = setTimeout(() => controller.abort(), 10000); // Abort request after 10 seconds
 
     try {
-      const response = await fetch(`${API_URL}/auth/login`, {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, role }),

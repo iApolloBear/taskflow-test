@@ -1,6 +1,102 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { updateTask as updateSavedTask, getTasks } from "../utils/taskApi.js";
+
 export const useTasks = () => {
   const [tasks, setTasks] = useState([]);
-  const addTask = (task) => setTasks([...tasks, task]);
-  return { tasks, addTask };
+  const [editTask, setEditTask] = useState(null);
+  const [editedData, setEditedData] = useState({
+    title: "",
+    description: "",
+    progress: 0,
+  });
+  const [titleFilter, setTitleFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+
+  // Fetch tasks from backend
+  const loadTasks = useCallback(async () => {
+    try {
+      const data = await getTasks();
+      if (data) setTasks(data);
+    } catch (err) {
+      console.error("Error loading tasks", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadTasks();
+  }, [loadTasks]);
+
+  const completeTask = async (id) => {
+    try {
+      await updateSavedTask(id, { progress: 100 });
+      loadTasks();
+    } catch (err) {
+      console.error("Error updating task:", err);
+    }
+  };
+
+  const updateTask = async (id) => {
+    try {
+      await updateSavedTask(id, editedData);
+      loadTasks();
+    } catch (err) {
+      console.error("Error updating task:", err);
+    } finally {
+      cancelEdit();
+    }
+  };
+
+  const startEditing = (task) => {
+    setEditTask(task.id);
+    setEditedData({
+      title: task.title,
+      description: task.description,
+      progress: task.progress,
+    });
+  };
+
+  const cancelEdit = () => {
+    setEditTask(null);
+    setEditedData({});
+  };
+
+  const handleChange = (e) => {
+    setEditedData({ ...editedData, [e.target.name]: e.target.value });
+  };
+
+  const handleProgressChange = (e) => {
+    setEditedData({ ...editedData, [e.target.name]: parseInt(e.target.value) });
+  };
+
+  const filteredTasks = useMemo(
+    () =>
+      tasks.filter((task) => {
+        const matchesTitle = task.title
+          .toLowerCase()
+          .includes(titleFilter.toLowerCase());
+        const matchesStatus =
+          statusFilter === "all" ||
+          (statusFilter === "completed" && task.progress === 100) ||
+          (statusFilter === "incomplete" && task.progress < 100);
+        return matchesTitle && matchesStatus;
+      }),
+    [tasks, titleFilter, statusFilter],
+  );
+
+  return {
+    tasks,
+    filteredTasks,
+    editTask,
+    editedData,
+    titleFilter,
+    statusFilter,
+    startEditing,
+    cancelEdit,
+    handleChange,
+    handleProgressChange,
+    updateTask,
+    completeTask,
+    setTitleFilter,
+    setStatusFilter,
+  };
 };

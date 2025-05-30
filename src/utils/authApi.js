@@ -5,7 +5,7 @@ export const login = async (loginData) => {
     const res = await axiosAPI.post("/api/auth/login", loginData);
     return res;
   } catch (err) {
-    console.error("Error loading tasks", err);
+    console.error("Error login user", err);
   }
 };
 
@@ -14,6 +14,6 @@ export const signUp = async (signUpData) => {
     const res = await axiosAPI.post("/api/auth/register", signUpData);
     return res;
   } catch (err) {
-    console.error("Error loading tasks", err);
+    console.error("Error register user", err);
   }
 };

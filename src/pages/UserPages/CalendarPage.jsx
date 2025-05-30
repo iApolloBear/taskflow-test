@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
@@ -7,6 +7,7 @@ import getDay from "date-fns/getDay";
 import enUS from "date-fns/locale/en-US";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import UserSidebar from "./UserSidebar";
+import { useTasks } from "../../hooks/useTasks";
 
 const locales = { "en-US": enUS };
 
@@ -19,28 +20,20 @@ const localizer = dateFnsLocalizer({
 });
 
 const CalendarPage = () => {
-  const [events, setEvents] = useState([]);
+  const { events, setEvents } = useTasks();
   const [currentDate, setCurrentDate] = useState(new Date());
 
   // Fetch tasks from localStorage
-  useEffect(() => {
-    const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    
-    const taskEvents = storedTasks.map((task) => ({
-      title: task.title,
-      start: new Date(task.deadline), 
-      end: new Date(task.deadline), 
-      type: "deadline",
-    }));
-
-    setEvents(taskEvents);
-  }, []);
-
   const handleSelectSlot = ({ start, end }) => {
     const title = prompt("Enter event title:");
     if (title) {
-      const isDeadline = window.confirm("Is this a deadline? Click OK for Yes, Cancel for No.");
-      setEvents([...events, { title, start, end, type: isDeadline ? "deadline" : "event" }]);
+      const isDeadline = window.confirm(
+        "Is this a deadline? Click OK for Yes, Cancel for No.",
+      );
+      setEvents([
+        ...events,
+        { title, start, end, type: isDeadline ? "deadline" : "event" },
+      ]);
     }
   };
 
@@ -50,7 +43,8 @@ const CalendarPage = () => {
 
   const eventStyleGetter = (event) => {
     let style = {
-      backgroundColor: event.type === "deadline" ? "rgb(239, 68, 68)" : "rgb(59, 130, 246)",
+      backgroundColor:
+        event.type === "deadline" ? "rgb(239, 68, 68)" : "rgb(59, 130, 246)",
       borderRadius: "5px",
       opacity: 0.9,
       color: "white",
@@ -68,7 +62,9 @@ const CalendarPage = () => {
       {/* Main Calendar Content */}
       <div className="flex-1 p-4 md:p-6">
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-md w-full max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">📅 Task & Deadline Calendar</h2>
+          <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
+            📅 Task & Deadline Calendar
+          </h2>
           <Calendar
             localizer={localizer}
             events={events}

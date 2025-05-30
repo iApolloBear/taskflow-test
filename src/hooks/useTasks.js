@@ -8,6 +8,7 @@ import {
 
 export const useTasks = () => {
   const [tasks, setTasks] = useState([]);
+  const [events, setEvents] = useState([]);
   const [editTask, setEditTask] = useState(null);
   const [editedData, setEditedData] = useState({
     title: "",
@@ -35,6 +36,17 @@ export const useTasks = () => {
   useEffect(() => {
     loadTasks();
   }, [loadTasks]);
+
+  useEffect(() => {
+    const taskEvents = tasks.map((task) => ({
+      title: task.title,
+      start: new Date(task.deadline),
+      end: new Date(task.deadline),
+      type: "deadline",
+    }));
+
+    setEvents(taskEvents);
+  }, [tasks]);
 
   useEffect(() => {
     const categorizedTasks = {
@@ -158,5 +170,7 @@ export const useTasks = () => {
     deleteTask,
     updateTaskData,
     setTasks,
+    events,
+    setEvents,
   };
 };

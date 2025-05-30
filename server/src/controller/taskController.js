@@ -2,7 +2,7 @@ const Task = require("../models/Task");
 
 const getTasks = async (req, res) => {
   try {
-    const tasks = await Task.find();
+    const tasks = await Task.find().populate("assignedTo", "fullName");
     res.json(tasks);
   } catch (err) {
     console.error(err);
@@ -23,7 +23,7 @@ const getTask = async (req, res) => {
 
 const createTask = async (req, res) => {
   try {
-    const task = new Task(req.body);
+    const task = new Task({ ...req.body, assignedTo: req.user.userId });
     const saved = await task.save();
     res.status(201).json(saved);
   } catch (err) {

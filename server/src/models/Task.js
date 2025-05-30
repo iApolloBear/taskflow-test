@@ -34,6 +34,11 @@ const TaskSchema = new mongoose.Schema({
       message: "Date must be in YYYY-MM-DD format",
     },
   },
+  assignedTo: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    default: null,
+  },
 });
 
 const transform = (doc, ret) => {

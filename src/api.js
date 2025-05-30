@@ -1,28 +1,25 @@
-const API_URL = "https://zidio-task-management-backend.onrender.com/";
+import axios from "axios";
 
-export const fetchTasks = async () => {
-  const response = await fetch(API_URL);
-  return await response.json();
-};
+export const axiosAPI = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
-export const createTask = async (task) => {
-  const response = await fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(task),
-  });
-  return await response.json();
-};
+axiosAPI.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+});
 
-export const deleteTask = async (id) => {
-  await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-};
-
-export const updateTask = async (id, updates) => {
-  const response = await fetch(`${API_URL}/${id}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(updates),
-  });
-  return await response.json();
+export const getTasks = async () => {
+  try {
+    const { data } = await axiosAPI.get("/api/tasks");
+    return data;
+  } catch (err) {
+    console.error("Error loading tasks", err);
+  }
 };

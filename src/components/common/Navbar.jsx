@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { FaTasks, FaUserCircle } from "react-icons/fa";
+import { updateUserLog } from "../../utils/userLogApi";
 
 const Navbar = () => {
   const { logout, user } = useAuth();
@@ -12,14 +13,20 @@ const Navbar = () => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const [profile, setProfile] = useState({ name: "User", profilePic: "", role: "user" });
+  const [profile, setProfile] = useState({
+    name: "User",
+    profilePic: "",
+    role: "user",
+  });
 
   useEffect(() => {
     // Check if user is in admin or user portal
     const isAdminPortal = location.pathname.startsWith("/admin");
 
     // Load correct profile from localStorage
-    const storedProfile = JSON.parse(localStorage.getItem(isAdminPortal ? "adminProfile" : "userProfile"));
+    const storedProfile = JSON.parse(
+      localStorage.getItem(isAdminPortal ? "adminProfile" : "userProfile"),
+    );
 
     if (storedProfile) {
       setProfile({
@@ -37,6 +44,8 @@ const Navbar = () => {
 
       // Remove the correct profile from storage
       localStorage.removeItem(isAdminPortal ? "adminProfile" : "userProfile");
+
+      await updateUserLog({ logoutTime: new Date() });
 
       navigate(`/${isAdminPortal ? "admin" : "user"}/dashboard`);
     } catch (err) {
@@ -74,17 +83,26 @@ const Navbar = () => {
         onClick={handleLogoClick}
         className="flex items-center text-3xl font-bold tracking-wide hover:opacity-70 transition"
       >
-        <img src="/app_icon.png" alt="TaskFlow Logo" className="w-12 h-12 rounded-full mr-2" />
+        <img
+          src="/app_icon.png"
+          alt="TaskFlow Logo"
+          className="w-12 h-12 rounded-full mr-2"
+        />
         TaskFlow
       </Link>
 
       <div className="flex items-center gap-4">
-        {!publicRoutes.filter(route => route != "/").includes(location.pathname) &&
-          <Link to="/task-list" className="flex items-center font-medium py-2 rounded-lg gap-2">
+        {!publicRoutes
+          .filter((route) => route != "/")
+          .includes(location.pathname) && (
+          <Link
+            to="/task-list"
+            className="flex items-center font-medium py-2 rounded-lg gap-2"
+          >
             <FaTasks />
             <span>Task List</span>
           </Link>
-        }
+        )}
         {/* Profile Button (Hidden on Landing/Login/Signup) */}
         {!hideProfileRoutes.includes(location.pathname) && (
           <div className="relative" ref={dropdownRef}>
@@ -109,11 +127,15 @@ const Navbar = () => {
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-44 bg-white shadow-lg rounded-lg overflow-hidden">
                 <ul className="text-gray-700">
-                  {user ?
+                  {user ? (
                     <>
                       <li>
                         <Link
-                          to={profile.role === "admin" ? "/admin/profile" : "/user/profile"}
+                          to={
+                            profile.role === "admin"
+                              ? "/admin/profile"
+                              : "/user/profile"
+                          }
                           className="block px-4 py-2 hover:bg-gray-200 transition"
                           onClick={() => setDropdownOpen(false)}
                         >
@@ -129,7 +151,8 @@ const Navbar = () => {
                         </button>
                       </li>
                     </>
-                    : <li>
+                  ) : (
+                    <li>
                       <Link
                         to={"/signup"}
                         className="block px-4 py-2 hover:bg-gray-200 transition"
@@ -137,7 +160,7 @@ const Navbar = () => {
                         Signup
                       </Link>
                     </li>
-                  }
+                  )}
                 </ul>
               </div>
             )}

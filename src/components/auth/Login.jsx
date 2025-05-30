@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { login as loginEndPoint } from "../../utils/authApi";
+import { createUserLog } from "../../utils/userLogApi";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -24,21 +24,16 @@ const Login = () => {
     const timeout = setTimeout(() => controller.abort(), 10000); // Abort request after 10 seconds
 
     try {
-      const response = await fetch(`${API_URL}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, role }),
-        signal: controller.signal, // Attach the abort controller
-      });
-
+      const response = await loginEndPoint({ email, password });
       clearTimeout(timeout); // Clear timeout if response is received in time
 
-      const data = await response.json();
-      if (!response.ok) {
+      const data = response.data;
+      if (response.status !== 200) {
         setError(data.message || "Invalid credentials");
         setLoading(false);
         return;
       }
+      await createUserLog({ jwtToken: data.token });
 
       login(email);
       localStorage.setItem("token", data.token);

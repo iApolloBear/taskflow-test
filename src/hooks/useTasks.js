@@ -1,5 +1,10 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { updateTask as updateSavedTask, getTasks } from "../utils/taskApi.js";
+import {
+  updateTask as updateSavedTask,
+  createTask as createNewTask,
+  deleteTask as deleteSavedTask,
+  getTasks,
+} from "../utils/taskApi.js";
 
 export const useTasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -51,12 +56,45 @@ export const useTasks = () => {
     }
   };
 
+  const createTask = async (task) => {
+    try {
+      await createNewTask(task);
+      loadTasks();
+    } catch (err) {
+      console.error("Error creating task:", err);
+    } finally {
+      cancelEdit();
+    }
+  };
+
   const updateTask = async (id) => {
     try {
       await updateSavedTask(id, editedData);
       loadTasks();
     } catch (err) {
       console.error("Error updating task:", err);
+    } finally {
+      cancelEdit();
+    }
+  };
+
+  const updateTaskData = async (id, data) => {
+    try {
+      await updateSavedTask(id, data);
+      loadTasks();
+    } catch (err) {
+      console.error("Error updating task:", err);
+    } finally {
+      cancelEdit();
+    }
+  };
+
+  const deleteTask = async (id) => {
+    try {
+      await deleteSavedTask(id);
+      loadTasks();
+    } catch (err) {
+      console.error("Error deleting task:", err);
     } finally {
       cancelEdit();
     }
@@ -116,5 +154,9 @@ export const useTasks = () => {
     setStatusFilter,
     categorizedTasks,
     setCategorizedTasks,
+    createTask,
+    deleteTask,
+    updateTaskData,
+    setTasks,
   };
 };

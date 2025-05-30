@@ -1,4 +1,5 @@
 const UserLog = require("../models/UserLog.js");
+const User = require("../models/User.js");
 
 const getAllUserLogs = async (req, res) => {
   try {
@@ -26,18 +27,20 @@ const getUserLog = async (req, res) => {
 };
 
 const createUserLog = async (req, res) => {
+  const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
   try {
-    const { jwtToken, ipAddress } = req.body;
+    const { jwtToken } = req.body;
     const user = req.user;
-    await UserLog.findOneAndDelete({ user: user._id });
+    await UserLog.findOneAndDelete({ user: user.userId });
+    const userDb = await User.findById(user.userId);
 
     const newLog = await UserLog.create({
       loginTime: new Date(),
       jwtToken,
-      name: user.fullName,
       role: user.role,
-      ipAddress,
-      user: user._id,
+      username: generateUsername(userDb.fullName),
+      ipAddress: ip,
+      user: user.userId,
     });
 
     res.status(201).json(newLog);
@@ -49,7 +52,7 @@ const createUserLog = async (req, res) => {
 
 const updateUserLog = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.userId;
     const userLog = await UserLog.findOneAndUpdate({ user: userId }, req.body, {
       new: true,
     });
@@ -71,6 +74,12 @@ const deleteUserLog = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+};
+
+const generateUsername = (fullName) => {
+  const newName = fullName.toLowerCase().replace(/ /g, "_");
+  const randomNumber = Math.floor(10 + Math.random() * 90);
+  return `${newName}@${randomNumber}`;
 };
 
 module.exports = {

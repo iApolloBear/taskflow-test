@@ -12,7 +12,7 @@ const {
 router.get("/", protect, getAllUserLogs);
 router.get("/:id", protect, getUserLog);
 router.post("/", protect, createUserLog);
-router.patch("/:id", protect, updateUserLog);
+router.patch("/", protect, updateUserLog);
 router.delete("/:id", protect, deleteUserLog);
 
 module.exports = router;

@@ -10,8 +10,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "client:localDev": "vite --mode localDev",
-    "client:development": "vite --mode development"
+    "client:local": "vite --mode localDev",
+    "client:dev": "vite --mode development"
   },
   "dependencies": {
     "@dnd-kit/accessibility": "^3.1.1",
